@@ -2,27 +2,19 @@ package rootmc.net.onlylobby;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.BlockEndPortal;
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
-import cn.nukkit.event.server.DataPacketReceiveEvent;
-import cn.nukkit.network.protocol.DataPacket;
-import cn.nukkit.network.protocol.LoginPacket;
-import cn.nukkit.network.protocol.ProtocolInfo;
+import cn.nukkit.network.protocol.TransferPacket;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
-import cn.nukkit.utils.TextFormat;
 import gt.creeperface.holograms.Holograms;
 import gt.creeperface.holograms.entity.HologramEntity;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Main extends PluginBase implements Listener {
@@ -35,7 +27,7 @@ public class Main extends PluginBase implements Listener {
     }
 
     @EventHandler
-    public void onjoin(PlayerJoinEvent event){
+    public void onjoin(PlayerJoinEvent event) {
         Effect effect;
         effect = Effect.getEffect(1);
         effect.setVisible(false);
@@ -58,7 +50,7 @@ public class Main extends PluginBase implements Listener {
     )
     public void move(PlayerMoveEvent event) {
         final Player player = event.getPlayer();
-        if (player.getLevel().getBlock(player.getFloorX(), player.getFloorY(), player.getFloorZ()) instanceof BlockEndPortal && player.y - (double)player.getFloorY() < 0.75D && !this.endportal.contains(player.getName())) {
+        if (player.getLevel().getBlock(player.getFloorX(), player.getFloorY(), player.getFloorZ()) instanceof BlockEndPortal && player.y - (double) player.getFloorY() < 0.75D && !this.endportal.contains(player.getName())) {
             this.endportal.add(player.getName());
             this.getServer().getScheduler().scheduleDelayedTask(new Task() {
                 public void onRun(int i) {
@@ -67,12 +59,12 @@ public class Main extends PluginBase implements Listener {
             }, 100);
             HologramEntity he = Holograms.getInstance().findNearEntity(player);
             String var4 = he.getHologramId();
-            switch(var4.toLowerCase()) {
+            switch (var4.toLowerCase()) {
                 case "ps":
-                    player.transfer("a.rootmc.net",300); //todo: make config
+                    transfer(player, "a.rootmc.net", 300);//todo: make config
                     break;
                 case "sb":
-                    player.transfer("a.rootmc.net",200);
+                    transfer(player, "a.rootmc.net", 200);
                     break;
                 default:
                     player.sendMessage("Server comming soon !");
@@ -81,5 +73,11 @@ public class Main extends PluginBase implements Listener {
         }
     }
 
+    public void transfer(Player p, String ip, int port) {
+        TransferPacket pk = new TransferPacket();
+        pk.address = ip;
+        pk.port = port;
+        p.dataPacket(pk);
+    }
 
 }

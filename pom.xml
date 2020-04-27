@@ -34,6 +34,8 @@
             <groupId>gt.creeperface.nukkit</groupId>
             <artifactId>holograms</artifactId>
             <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/Holograms.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,5 @@
+name: "OnlyLobby"
+version: "1.0.0"
+author: "TanToan"
+api: ["1.0.0"]
+main: rootmc.net.onlylobby.Main
